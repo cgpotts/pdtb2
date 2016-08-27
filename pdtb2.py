@@ -23,7 +23,7 @@ from nltk.tree import Tree
 from nltk.stem import WordNetLemmatizer
 
 
-GRAPHVIZ_TEMPLATE_FILENAME = 'pdtb-template.dot'
+GRAPHVIZ_TEMPLATE_FILENAME = 'pdtb2-template.dot'
 
 
 ######################################################################
