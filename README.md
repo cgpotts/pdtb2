@@ -37,7 +37,7 @@ so that WordNet is available.
 The main interface provided by pdtb.py is the `CorpusReader`.
 
 ```python
-from pdtb import CorpusReader
+from pdtb2 import CorpusReader
 
 corpus = CorpusReader('pdtb2.csv')
 ```
@@ -60,7 +60,7 @@ Here's a simple example of working with text and trees (with row 17
 chosen because it's a manageable but illustrative case):
 
 ```python
-from pdtb import CorpusReader, Datum
+from pdtb2 import CorpusReader, Datum
 
 iterator = CorpusReader('pdtb2.csv').iter_data(display_progress=False)
 for _ in range(17): next(iterator)
