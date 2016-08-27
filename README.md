@@ -80,6 +80,20 @@ d.arg1_pos(wn_format=True)
 d.arg1_pos(lemmatize=True)
 [('that', 'wdt'), ('*T*-1', '-none-'), ('hang', 'v'), ('over', 'in'), \
 ('part', 'n'), ('of', 'in'), ('the', 'dt'), ('factory', 'n'), (',', ',')]
+
+len(d.Arg1_Trees)
+5
+
+for t in d.Arg1_Trees:
+	t.pprint()
+	
+(WHNP-1 (WDT that))
+(NP-SBJ (-NONE- *T*-1))
+(VBD hung)
+(PP-LOC
+  (IN over)
+  (NP (NP (NNS parts)) (PP (IN of) (NP (DT the) (NN factory)))))
+(, ,)
 ```
 
 There are similarly named methods for Sups, connectives, and attributions.
