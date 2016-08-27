@@ -1,0 +1,149 @@
+digraph g {
+
+    rankdir=LR;
+    node [shape="record"];
+
+	label=$TITLE;
+	
+	subgraph cluster_arg2 {
+		label = "";
+
+		Arg2 [color="#000000", fontcolor="#000000"];	
+		Arg2 -> Arg2_Attribution;		
+		Arg2 -> Sup2 [color="#005758", fontcolor="#005758", style="filled"];
+
+	    Arg2_RawText [label="$ARG2_RAWTEXT", color="#000000", fontcolor="#000000", style="unfilled"];
+		Arg2 -> Arg2_RawText [label="Arg2_RawText"];
+
+	    Arg2_Trees [label="$ARG2_TREES", color="#000000", fontcolor="#000000"];
+		Arg2 -> Arg2_Trees [label="Arg2_Trees"];
+
+		Arg2_Attribution [color="#0066FF", fontcolor="#FFFFFF", style="filled"]
+
+		Arg2_Attribution_Source [label="$ARG2_ATTRIBUTION_SOURCE", color="#0066FF", fontcolor="#FFFFFF", style="filled"];
+		Arg2_Attribution -> Arg2_Attribution_Source [label="Arg2_Attribution", color="#0066FF", fontcolor="#0066FF", style="filled"];
+
+		Arg2_Attribution_Type [label="$ARG2_ATTRIBUTION_TYPE", color="#0066FF", fontcolor="#FFFFFF", style="filled"];
+		Arg2_Attribution -> Arg2_Attribution_Type [label="Arg2_Attribution_Type", color="#0066FF", fontcolor="#0066FF", style="filled"];
+
+		Arg2_Attribution_Polarity [label="$ARG2_ATTRIBUTION_POLARITY", color="#0066FF", fontcolor="#FFFFFF", style="filled"];	
+		Arg2_Attribution -> Arg2_Attribution_Polarity [label="Arg2_Attribution_Polarity", color="#0066FF", fontcolor="#0066FF", style="filled"];		
+
+		Arg2_Attribution_Determinacy [label="$ARG2_ATTRIBUTION_DETERMINACY", color="#0066FF", fontcolor="#FFFFFF", style="filled"];		
+		Arg2_Attribution -> Arg2_Attribution_Determinacy [label="Arg2_Attribution_Determinacy", color="#0066FF", fontcolor="#0066FF", style="filled"];	
+
+		Arg2_Attribution_Trees [label="$ARG2_ATTRIBUTION_TREES", color="#0066FF", fontcolor="#FFFFFF", style="filled"];
+		Arg2_Attribution -> Arg2_Attribution_Trees [label="Arg2_Attribution_Trees", color="#0066FF", fontcolor="#0066FF", style="filled"];
+
+		Arg2_Attribution_RawText [label="$ARG2_ATTRIBUTION_RAWTEXT", color="#0066FF", fontcolor="#FFFFFF", style="filled"];
+		Arg2_Attribution -> Arg2_Attribution_RawText [label="Arg2_Attribution_RawText", color="#0066FF", fontcolor="#0066FF", style="filled"];
+
+		Sup2 [label="Sup2", color="#005758", fontcolor="#FFFFFF", style="filled"];
+
+		Sup2_RawText [label="$SUP2_RAWTEXT", color="#005758", fontcolor="#FFFFFF", style="filled"];
+		Sup2 -> Sup2_RawText [label="Sup2_RawText", color="#005758", fontcolor="#005758", style="filled"];
+
+		Sup2_Trees [label="$SUP2_TREES", color="#005758", fontcolor="#FFFFFF", style="filled"];
+		Sup2 -> Sup2_Trees [label="Sup2_Trees", color="#005758", fontcolor="#005758", style="filled"];
+
+	}
+	
+	subgraph cluster_conn0 {
+		label = "";
+	
+		Connective;
+		
+		Connective_Trees [label="$CONNECTIVE_TREES"];
+		Connective -> Connective_Trees [label="Connective_Trees"];
+		
+		Connective_RawText [label="$CONNECTIVE_RAWTEXT"];
+		Connective -> Connective_RawText [label="Connective_RawText"];
+
+		Connective_StringPosition [label="$CONNECTIVE_STRINGPOSITION"];
+		Connective -> Connective_StringPosition  [label="Connective_StringPosition"];
+		
+		ConnHead [label="$CONNHEAD"];
+		Connective -> ConnHead [label="ConnHead"];
+		
+		Conn1  [label="$CONN1"];
+		Connective -> Conn1 [label="Conn1"]
+		ConnHeadSemClass1 [label="$CONNHEADSEMCLASS1"];
+		Connective -> ConnHeadSemClass1 [label="ConnHeadSemClass1"];		
+		ConnHeadSemClass2 [label="$CONNHEADSEMCLASS2"];
+		Connective -> ConnHeadSemClass2 [label="ConnHeadSemClass2"];
+						
+		Conn2  [label="$CONN2"];
+		Connective -> Conn2 [label="Conn2"]
+		Conn2SemClass1 [label="$CONN2SEMCLASS1"];
+		Connective -> Conn2SemClass1 [label="Conn2SemClass1"];
+		Conn2SemClass1 [label="$CONN2SEMCLASS2"];
+		Connective -> Conn2SemClass2 [label="Conn2SemClass2"];
+		
+		Attribution [color="#0066FF", fontcolor="#FFFFFF", style="filled"];
+		Connective -> Attribution [color="#0066FF", fontcolor="#0066FF", style="filled"];
+
+		Attribution_Source [label="$ATTRIBUTION_SOURCE", color="#0066FF", fontcolor="#FFFFFF", style="filled"];
+		Attribution -> Attribution_Source [label="Attribution", color="#0066FF", fontcolor="#0066FF", style="filled"];
+
+		Attribution_Type [label="$ATTRIBUTION_TYPE", color="#0066FF", fontcolor="#FFFFFF", style="filled"];
+		Attribution -> Attribution_Type [label="Attribution_Type", color="#0066FF", fontcolor="#0066FF", style="filled"];
+
+		Attribution_Polarity [label="$ATTRIBUTION_POLARITY", color="#0066FF", fontcolor="#FFFFFF", style="filled"];		
+		Attribution -> Attribution_Polarity [label="Attribution_Polarity", color="#0066FF", fontcolor="#0066FF", style="filled"];	
+
+		Attribution_Determinacy [label="$ATTRIBUTION_DETERMINACY", color="#0066FF", fontcolor="#FFFFFF", style="filled"];		
+		Attribution -> Attribution_Determinacy [label="Attribution_Determinacy", color="#0066FF", fontcolor="#0066FF", style="filled"];	
+
+		Attribution_Trees [label="$ATTRIBUTION_TREES", color="#0066FF", fontcolor="#FFFFFF", style="filled"];
+		Attribution -> Attribution_Trees [label="Attribution_Trees", color="#0066FF", fontcolor="#0066FF", style="filled"];
+
+		Attribution_RawText [label="$ATTRIBUTION_RAWTEXT", color="#0066FF", fontcolor="#FFFFFF", style="filled"];
+		Attribution -> Attribution_RawText [label="Attribution_RawText", color="#0066FF", fontcolor="#0066FF", style="filled"];
+	
+	}
+
+	subgraph cluster_arg1 {
+		label = "";	
+	
+		Arg1 [color="#000000", fontcolor="#000000", style="unfilled"];
+		Arg1 -> Arg1_Attribution;		
+		Arg1 -> Sup1 [color="#005758", fontcolor="#005758", style="filled"];
+	
+        Arg1_RawText [label="$ARG1_RAWTEXT", color="#000000", fontcolor="#000000", style="unfilled"];
+		Arg1 -> Arg1_RawText [label="Arg1_RawText"];
+		
+        Arg1_Trees [label="$ARG1_TREES", color="#000000", fontcolor="#000000", style="unfilled"];
+		Arg1 -> Arg1_Trees [label="Arg1_Trees", color="#000000", fontcolor="#000000"];
+
+		Arg1_Attribution [color="#0066FF", fontcolor="#FFFFFF", style="filled"];
+					
+		Arg1_Attribution_Source [label="$ARG1_ATTRIBUTION_SOURCE", color="#0066FF", fontcolor="#FFFFFF", style="filled"];
+		Arg1_Attribution -> Arg1_Attribution_Source [label="Arg1_Attribution", color="#0066FF", fontcolor="#0066FF", style="filled"];
+		
+		Arg1_Attribution_Type [label="$ARG1_ATTRIBUTION_TYPE", color="#0066FF", fontcolor="#FFFFFF", style="filled"];
+		Arg1_Attribution -> Arg1_Attribution_Type [label="Arg1_Attribution_Type", color="#0066FF", fontcolor="#0066FF", style="filled"];
+		
+		Arg1_Attribution_Polarity [label="$ARG1_ATTRIBUTION_POLARITY", color="#0066FF", fontcolor="#FFFFFF", style="filled"];	
+		Arg1_Attribution -> Arg1_Attribution_Polarity [label="Arg1_Attribution_Polarity", color="#0066FF", fontcolor="#0066FF", style="filled"];
+				
+		Arg1_Attribution_Determinacy [label="$ARG1_ATTRIBUTION_DETERMINACY", color="#0066FF", fontcolor="#FFFFFF", style="filled"];	
+		Arg1_Attribution -> Arg1_Attribution_Determinacy [label="Arg1_Attribution_Determinacy", color="#0066FF", fontcolor="#0066FF", style="filled"];	
+					
+		Arg1_Attribution_Trees [label="$ARG1_ATTRIBUTION_TREES", color="#0066FF", fontcolor="#FFFFFF", style="filled"];
+		Arg1_Attribution -> Arg1_Attribution_Trees [label="Arg1_Attribution_Trees", color="#0066FF", fontcolor="#0066FF", style="filled"];
+								
+		Arg1_Attribution_RawText [label="$ARG1_ATTRIBUTION_RAWTEXT", color="#0066FF", fontcolor="#FFFFFF", style="filled"];
+		Arg1_Attribution -> Arg1_Attribution_RawText [label="Arg1_Attribution_RawText", color="#0066FF", fontcolor="#0066FF", style="filled"];
+				
+		Sup1 [label="Sup1", color="#005758", fontcolor="#FFFFFF", style="filled"];
+
+		Sup1_RawText [label="$SUP1_RAWTEXT", color="#005758", fontcolor="#FFFFFF", style="filled"];
+		Sup1 -> Sup1_RawText [label="Sup1_RawText", color="#005758", fontcolor="#005758", style="filled"];
+
+		Sup1_Trees [label="$SUP1_TREES", color="#005758", fontcolor="#FFFFFF", style="filled"];
+		Sup1 -> Sup1_Trees [label="Sup1_Trees", color="#005758", fontcolor="#005758"];
+		
+    }
+	   
+}
+
