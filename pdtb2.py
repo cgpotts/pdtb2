@@ -36,10 +36,10 @@ class CorpusReader:
         with open(self.src_filename) as f:
             row_iterator = csv.reader(f)
             next(row_iterator) # Skip past the header.
-            for i, row in emnumerate(row_iterator):
+            for i, row in enumerate(row_iterator):
                 if display_progress:
                     sys.stderr.write("\r")
-                    sys.stderr.write("row {}".format(i+1)
+                    sys.stderr.write("row {}".format(i+1))
                     sys.stderr.flush()
                 yield Datum(row)
             if display_progress: sys.stderr.write("\n")
@@ -615,7 +615,7 @@ class Datum:
         if not s:
             return []
         parts = re.split(r"\s*;\s*", s)
-        seqs = list(map((lambda x : map(int, re.split(r"\s*\.\.\s*", x))), parts))
+        seqs = map((lambda x : map(int, re.split(r"\s*,\s*", x))), parts)
         return seqs
 
     def __process_trees(self, s):

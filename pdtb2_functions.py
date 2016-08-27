@@ -14,14 +14,13 @@ __email__ = "See the author's website"
 ######################################################################
 
 import csv
-import numpy
 from random import shuffle
 import re
 import pickle
 from collections import defaultdict
 from operator import itemgetter
 
-from .pdtb2 import CorpusReader, Datum
+from pdtb2 import CorpusReader, Datum
 
 ######################################################################
  
@@ -52,15 +51,16 @@ def count_semantic_classes():
 def count_semantic_classes_to_csv(output_filename):
     """Write the results of  count_semantic_classes() to a CSV file."""
     # Create the CSV writer:
-    csvwriter = csv.writer(file(output_filename, 'w'))
-    # Add the header row:
-    csvwriter.writerow(['ConnHeadSemClass1', 'Count'])
-    # Get the counts:
-    d = count_semantic_classes()
-    # Sort by name so that we can perhaps see trends in the
-    # super-categories:
-    for sem, count in sorted(d.items()):
-        csvwriter.writerow([sem, count])
+    with open(output_filename, 'wt') as f:
+        csvwriter = csv.writer(f)
+        # Add the header row:
+        csvwriter.writerow(['ConnHeadSemClass1', 'Count'])
+        # Get the counts:
+        d = count_semantic_classes()
+        # Sort by name so that we can perhaps see trends in the
+        # super-categories:
+        for sem, count in sorted(d.items()):
+            csvwriter.writerow([sem, count])
  
 # count_semantic_classes_to_csv('ConnHeadSemClass1.csv')
 
@@ -98,7 +98,7 @@ def connective_distribution2wordle(d):
             # Spacing is hard to interpret in Wordle. This should help:
             conn = conn.replace(' ', '_')
             # Append to the growing string:
-            s += '%s:%s\n' % (conn, c)
+            s += '{}:{}\n'.format(conn, c)
     return s
 
 ######################################################################
@@ -147,7 +147,8 @@ def connective_initial(sem_re, output_filename):
     """
     Pull out examples of Explicit or Implicit relations in which
 
-    (i) Arg1 immediately precedes Arg2, with only the connective intervening in the case of Explicit.
+    (i) Arg1 immediately precedes Arg2, with only the connective
+        intervening in the case of Explicit.
     (ii) There is no supplementary text on either argument.
     (iii) ConnHeadSemClass1 matches the user-supplied regex sem_re    
 
@@ -156,26 +157,43 @@ def connective_initial(sem_re, output_filename):
     keepers = {} # Stores the items that pass muster.
     pdtb = CorpusReader('pdtb2.csv')
     for datum in pdtb.iter_data(display_progress=False):
-        # Restrict to examples that are either Implicit or Explicit and have no supplementary text:
+        # Restrict to examples that are either Implicit or
+        # Explicit and have no supplementary text:
         rel = datum.Relation
         if rel in ('Implicit', 'Explicit') and not datum.Sup1_RawText and not datum.Sup2_RawText:
             # Further restrict to the class of semantic relations captured by sem_re:            
             if sem_re.search(datum.ConnHeadSemClass1):                
                 # Make sure that Arg1, the connective, and Arg2 are all adjacent:
                 if adjacency_check(datum):
-                    # Stick to simple connectives: for Explicit, the connective and its head are the same;
+                    # Stick to simple connectives: for Explicit, the connective
+                    # and its head are the same;
                     # for Implicit, there is no secondary connective.
                     if (rel == 'Explicit' and datum.ConnHead == datum.Connective_RawText) or \
                        (rel == 'Implicit' and not datum.Conn2):
                         itemId = "%s/%s" % (datum.Section, datum.FileNumber)
                         print(itemId)
-                        conn = datum.conn_str(distinguish_implicit=False) # We needn't flag them, since column 2 does that.
-                        # Store in a dict with file number keys to avoid taking two sentences from the same file:
-                        keepers[itemId] = [itemId, rel, datum.ConnHeadSemClass1, datum.Arg1_RawText, conn, datum.Arg2_RawText]
+                        # We needn't flag them, since column 2 does that.
+                        conn = datum.conn_str(distinguish_implicit=False) 
+                        # Store in a dict with file number keys to avoid taking two
+                        # sentences from the same file:
+                        keepers[itemId] = [
+                            itemId,
+                            rel,
+                            datum.ConnHeadSemClass1,
+                            datum.Arg1_RawText,
+                            conn,
+                            datum.Arg2_RawText]
     # Store the results in a CSV file:
-    csvwriter = csv.writer(file(output_filename, 'w'))
-    csvwriter.writerow(['ItemId', 'Relation', 'ConnHeadSemClass1', 'Arg1', 'Connective', 'Arg2'])
-    csvwriter.writerows(list(keepers.values()))
+    with open(output_filename, 'wt') as f:
+        csvwriter = csv.writer(f)
+        csvwriter.writerow([
+            'ItemId',
+            'Relation',
+            'ConnHeadSemClass1',
+            'Arg1',
+            'Connective',
+            'Arg2'])
+        csvwriter.writerows(list(keepers.values()))
     print("CSV created.")
     
 # connective_initial(re.compile(r'Expansion'), 'pdtb-continuation-data-expansion.csv')    
@@ -183,7 +201,8 @@ def connective_initial(sem_re, output_filename):
 ######################################################################
 
 def semantic_classes_in_implicit_relations():
-    """Count the primary semantic classes for connectives limted to Implicit relations."""
+    """Count the primary semantic classes for connectives
+    limited to Implicit relations."""
     d = defaultdict(int)
     pdtb = CorpusReader('pdtb2.csv')
     for datum in pdtb.iter_data(display_progress=True):
@@ -197,46 +216,27 @@ def semantic_classes_in_implicit_relations():
 
 ######################################################################
 
-def word_pair_frequencies(output_filename):
-    """
-    Gather count data on word pairs where the first word is drawn from
-    Arg1 and the second from Arg2. The results are storied in the
-    pickle file output_filename.
-    """
-    d = defaultdict(int)
-    pdtb = CorpusReader('pdtb2.csv')
-    for datum in pdtb.iter_data(display_progress=True):
-        if datum.Relation == 'Implicit':
-            # Gather the word-pair features for inclusion in d.
-            # See the Datum methods arg1_words() and arg2_words.
-            pass
-            
-    # Finally, pickle the results.
-    pickle.dump(d, file(output_filename, 'w'))
-
-######################################################################
-
 def random_Implicit_subset(sample_size=30):
     """
     Creates a CSV file containing randomly selected Implicit examples
     from each of the primary semantic classes. sample_size determines
     the size of the sample from each class (default: 30). The output
-    is a file called pdtb-random-Implicit-subset.csv with columns named for
-    the attributes/methods that determined the values.
-    """
-    csvwriter = csv.writer(open('pdtb-random-Implicit-subset.csv', 'w'))
-    csvwriter.writerow(['Arg1_RawText', 'conn_str', 'Arg2_RawText', 'primary_semclass1'])
+    is a file called pdtb-random-Implicit-subset.csv with columns named
+    for the attributes/methods that determined the values.
+    """    
     d = defaultdict(list)
     pdtb = CorpusReader('pdtb2.csv')
     for datum in pdtb.iter_data(display_progress=True):
         if datum.Relation == 'Implicit' and not datum.Sup1_RawText and not datum.Sup2_RawText:
             d[datum.primary_semclass1()].append(datum)
-    sample_size = 30
-    for cls, data, in list(d.items()):
-        shuffle(data)
-        for datum in data[: sample_size]:
-            row = [datum.Arg1_RawText, datum.conn_str(), datum.Arg2_RawText, cls]
-            csvwriter.writerow(row)
+    with open('pdtb-random-Implicit-subset.csv', 'w') as f:
+        csvwriter = csv.writer(f)
+        csvwriter.writerow(['Arg1_RawText', 'conn_str', 'Arg2_RawText', 'primary_semclass1'])
+        for cls, data, in list(d.items()):
+            shuffle(data)
+            for datum in data[: sample_size]:
+                row = [datum.Arg1_RawText, datum.conn_str(), datum.Arg2_RawText, cls]
+                csvwriter.writerow(row)
 
 ######################################################################
 
@@ -247,70 +247,4 @@ def distribution_of_relative_arg_order():
         d[datum.relative_arg_order()] += 1
     for order, count in sorted(list(d.items()), key=itemgetter(1), reverse=True):
         print(order, count)
-    
-######################################################################
-
-def contingencies(row_function, column_function):
-    """
-    Calculates observed/expected values for the count matrix
-    determined by row_function and column_function, both of which
-    should be functions from Datum instances into values.  Output
-    values of None are ignored and can thus be used as a filter.
-    """
-    d = defaultdict(int)
-    pdtb = CorpusReader('pdtb2.csv')
-    for datum in pdtb.iter_data(display_progress=True):
-        row_val = row_function(datum)
-        col_val = column_function(datum)
-        if row_val and col_val:
-            d[(row_val, col_val)] += 1
-    # Convert to matrix format:
-    row_classes = sorted(set([x[0] for x in list(d.keys())]))
-    col_classes = sorted(set([x[1] for x in list(d.keys())]))
-    observed = numpy.zeros((len(row_classes), len(col_classes)))
-    for i, row in enumerate(row_classes):
-        for j, col in enumerate(col_classes):
-            observed[i, j] = d[(row, col)]
-    # Get expectations:
-    expected = numpy.zeros((len(row_classes), len(col_classes)))
-    for i in range(len(row_classes)):
-        for j in range(len(col_classes)):
-            expected[i, j] = (numpy.sum(observed[i, : ]) * numpy.sum(observed[ :, j])) / numpy.sum(observed)
-    # Rank by O/E:
-    oe = {}
-    for i, row in enumerate(row_classes):
-        for j, col in enumerate(col_classes):
-            oe[(row, col)] = observed[i, j] / expected[i, j]
-    # Printing:
-    print("======================================================================")
-    print("Observed")
-    print_matrix(observed, row_classes, col_classes)
-    print("--------------------------------------------------")
-    print("Expected")
-    print_matrix(expected, row_classes, col_classes)
-    print("--------------------------------------------------")
-    print("O/E")
-    for row, col in sorted(list(oe.items()), key=itemgetter(1), reverse=True):
-        print("{} {}".format(row, col))
-    print("======================================================================")
-
-def print_matrix(m, rownames, colnames):
-    """Pretty-print a 2d numpy array with row and column names."""
-    # Max column width:
-    col_width = max([len(x) for x in rownames + colnames]) + 4
-    # Row-formatter:
-    def fmt_row(a):
-        return "".join(map((lambda x : str(x).rjust(col_width)), a))
-    # Printing:
-    print(fmt_row([''] + colnames))            
-    for i, rowname in enumerate(rownames):
-        row = [rowname]
-        for j in range(len(colnames)):
-            row.append(round(m[i, j], 2))
-        print(fmt_row(row))
-    
-    
-        
-    
-        
-    
+                        
