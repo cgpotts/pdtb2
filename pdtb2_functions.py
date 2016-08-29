@@ -24,9 +24,9 @@ from pdtb2 import CorpusReader, Datum
 
 ######################################################################
  
-def relation_count():
+def relation_count(corpus_filename='pdtb2.csv'):
     """Calculate and display the distribution of relations."""
-    pdtb = CorpusReader('pdtb2.csv')
+    pdtb = CorpusReader(corpus_filename)
     # Create a count dictionary of relations:
     d = defaultdict(int)
     for datum in pdtb.iter_data():
@@ -37,9 +37,9 @@ def relation_count():
  
 ######################################################################
 
-def count_semantic_classes():
+def count_semantic_classes(corpus_filename='pdtb2.csv'):
     """Count ConnHeadSemClass1 values."""
-    pdtb = CorpusReader('pdtb2.csv')
+    pdtb = CorpusReader(corpus_filename)
     d = defaultdict(int)
     for datum in pdtb.iter_data():
         sc = datum.ConnHeadSemClass1
@@ -66,9 +66,9 @@ def count_semantic_classes_to_csv(output_filename):
 
 ######################################################################
 
-def connective_distribution():
+def connective_distribution(corpus_filename='pdtb2.csv'):
     """Counts of connectives by relation type."""
-    pdtb = CorpusReader('pdtb2.csv')
+    pdtb = CorpusReader(corpus_filename)
     d = defaultdict(lambda : defaultdict(int))
     for datum in pdtb.iter_data():
         cs = datum.conn_str(distinguish_implicit=False)
@@ -103,9 +103,9 @@ def connective_distribution2wordle(d):
 
 ######################################################################
 
-def attribution_counts():
+def attribution_counts(corpus_filename='pdtb2.csv'):
     """Create a count dictionary of non-null attribution values."""
-    pdtb = CorpusReader('pdtb2.csv')
+    pdtb = CorpusReader(corpus_filename)
     d = defaultdict(int)
     for datum in pdtb.iter_data():
         src = datum.Attribution_Source
@@ -113,9 +113,9 @@ def attribution_counts():
             d[src] += 1
     return d
 
-def print_attribution_texts():
+def print_attribution_texts(corpus_filename='pdtb2.csv'):
     """Inspect the strings characterizing attribution values."""
-    pdtb = CorpusReader('pdtb2.csv')
+    pdtb = CorpusReader(corpus_filename)
     for datum in pdtb.iter_data(display_progress=False):
         txt = datum.Attribution_RawText
         if txt:
@@ -143,7 +143,7 @@ def adjacency_check(datum):
         else:
             return False        
 
-def connective_initial(sem_re, output_filename):
+def connective_initial(sem_re, output_filename, corpus_filename='pdtb2.csv'):
     """
     Pull out examples of Explicit or Implicit relations in which
 
@@ -155,7 +155,7 @@ def connective_initial(sem_re, output_filename):
     The results go into a CSV file named output_filename.
     """
     keepers = {} # Stores the items that pass muster.
-    pdtb = CorpusReader('pdtb2.csv')
+    pdtb = CorpusReader(corpus_filename)
     for datum in pdtb.iter_data(display_progress=False):
         # Restrict to examples that are either Implicit or
         # Explicit and have no supplementary text:
@@ -200,11 +200,11 @@ def connective_initial(sem_re, output_filename):
 
 ######################################################################
 
-def semantic_classes_in_implicit_relations():
+def semantic_classes_in_implicit_relations(corpus_filename='pdtb2.csv'):
     """Count the primary semantic classes for connectives
     limited to Implicit relations."""
     d = defaultdict(int)
-    pdtb = CorpusReader('pdtb2.csv')
+    pdtb = CorpusReader(corpus_filename)
     for datum in pdtb.iter_data(display_progress=True):
         if datum.Relation == 'Implicit':
             d[datum.primary_semclass1()] += 1
@@ -216,7 +216,7 @@ def semantic_classes_in_implicit_relations():
 
 ######################################################################
 
-def random_Implicit_subset(sample_size=30):
+def random_Implicit_subset(sample_size=30, corpus_filename='pdtb2.csv'):
     """
     Creates a CSV file containing randomly selected Implicit examples
     from each of the primary semantic classes. sample_size determines
@@ -225,7 +225,7 @@ def random_Implicit_subset(sample_size=30):
     for the attributes/methods that determined the values.
     """    
     d = defaultdict(list)
-    pdtb = CorpusReader('pdtb2.csv')
+    pdtb = CorpusReader(corpus_filename)
     for datum in pdtb.iter_data(display_progress=True):
         if datum.Relation == 'Implicit' and not datum.Sup1_RawText and not datum.Sup2_RawText:
             d[datum.primary_semclass1()].append(datum)
@@ -240,9 +240,9 @@ def random_Implicit_subset(sample_size=30):
 
 ######################################################################
 
-def distribution_of_relative_arg_order():
+def distribution_of_relative_arg_order(corpus_filename='pdtb2.csv'):
     d = defaultdict(int)
-    pdtb = CorpusReader('pdtb2.csv')
+    pdtb = CorpusReader(corpus_filename)
     for datum in pdtb.iter_data(display_progress=True):
         d[datum.relative_arg_order()] += 1
     for order, count in sorted(list(d.items()), key=itemgetter(1), reverse=True):
